@@ -33,17 +33,43 @@
 			border:0;
 			height:100%;width:100%;	
 		}
-	
 	</style>
 </head>
 
-<body>
+<script>
+	var version = 1; 
+	var refCode; 
+	var refVisuel; 
+
+	// 3) Interaction 
+	// TODO : lors du clic sur bouton,
+	// Actualiser l'affichage 
+
+	function init() {
+		refCode = document.getElementById("code");
+		refVisuel = document.getElementById("cadreVisuel");
+		document.getElementById("version").innerHTML += " " + version;
+	}
+
+	function actualiser() { 
+		// récupérer le contenu du code saisi
+		var contenu = refCode.value; 
+		console.log("actualisation de " + contenu );
+
+		// écrire ce contenu dans le cadreVisuel
+		refVisuel.innerHTML = contenu; 
+	}
+
+	// TODO 2: utiliser une variable globale "version" pour définir la version affichée dans la bannière 
+</script>
+
+<body onload="init();">
 
 <!-- 1) Structure --> 
 
 <div id="banniere">
-	<span id="version">Version 1</span>
-	<input type="button" value="Actualiser" />
+	<span id="version">Version</span>
+	<input type="button" onclick="actualiser();" value="Actualiser" />
 	<input type="checkbox" id="cbAuto" />
 	<label for="cbAuto">automatiquement</label>
 </div>
