@@ -3,6 +3,37 @@
 	<title> Essaye toi m&ecirc;me !</title>
 	<style>
 		/* 2) Présentation */
+		body {margin:5px;}
+		#banniere, .cadre {
+			border: 1px solid black;
+			padding: 5px;
+		}
+		#banniere{
+			text-align:center;
+			height:30px;
+			vertical-align:middle;line-height:30px;	
+		}
+		#version {
+			float:left;
+		}
+		.cadre {
+			position:absolute; 
+			top : 52px; /*5px(margin body) + 30px (height banniere)  + 2px (2x border) + 5px (espace entre banniere/cadre) + 2x5px (padding banniere)  */
+			bottom:5px;
+		}
+
+		#cadreSaisie {
+			left:5px;right:50.5%;
+		}
+		#cadreVisuel {
+			right:5px;left:50.5%;
+		}
+		#code {
+			resize:none;
+			border:0;
+			height:100%;width:100%;	
+		}
+	
 	</style>
 </head>
 
@@ -11,7 +42,7 @@
 <!-- 1) Structure --> 
 
 <div id="banniere">
-	<span id="version"></span>
+	<span id="version">Version 1</span>
 	<input type="button" value="Actualiser" />
 	<input type="checkbox" id="cbAuto" />
 	<label for="cbAuto">automatiquement</label>
