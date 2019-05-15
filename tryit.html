@@ -37,19 +37,57 @@
 </head>
 
 <script>
-	var version = 1; 
-	var refCode; 
-	var refVisuel; 
-
 	// 3) Interaction 
+
+	var version = 1; 
 	// TODO : lors du clic sur bouton,
 	// Actualiser l'affichage 
+
+
+	version = 2; 
+	// TODO : détecter les modifications du code 
+	// événement change ?
+	// 	=> déclenché que sur perte du focus dans le champ 
+	// événements liés aux interaction clavier 
+	// => onkeydown : touche enfoncée, pas encore relachée, 
+	// 		le caractère saisi n'est pas encore dans le champ 
+	// => onkeyup : touche relachée , le caractère est dans le champ
+	// 		Bon moment pour actualiser 
+	// => onkeypress : appui prolongé sur une touche  
+
+	var refCode; 
+	var refVisuel; 
+	var refCbAuto; 
 
 	function init() {
 		refCode = document.getElementById("code");
 		refVisuel = document.getElementById("cadreVisuel");
+		refCbAuto = document.getElementById("cbAuto");
 		document.getElementById("version").innerHTML += " " + version;
 	}
+
+	var observateur; 
+	function saisir (){
+		// il vient d'y avoir une modification dans code 
+		// faut-il actualiser ? 
+
+		// Comment savoir si la case à cocher est cochée 
+		// à partir de la référence refCbAuto ?? 
+
+		// Comment connaitre les propriétés des objets javascript ? 
+		// 1) Afficher dans la console 
+		console.log(refCbAuto);
+		// => N'affiche pas les propriétés de l'objet 
+		// 2) Utiliser une variable globale 'observateur'
+		observateur = refCbAuto; 
+		// Console de débug -> Sources ->  Watch -> Ajouter la variable
+		// On peut visualiser son contenu 
+		// => Elle dipose d'une propriété checked 
+
+		// SI (case cbAuto est cochée)
+		if (refCbAuto.checked) 
+			actualiser(); 
+ 		}
 
 	function actualiser() { 
 		// récupérer le contenu du code saisi
@@ -70,12 +108,12 @@
 <div id="banniere">
 	<span id="version">Version</span>
 	<input type="button" onclick="actualiser();" value="Actualiser" />
-	<input type="checkbox" id="cbAuto" />
+	<input type="checkbox" id="cbAuto" onclick="actualiser();" />
 	<label for="cbAuto">automatiquement</label>
 </div>
 
 <div class="cadre" id="cadreSaisie">
-	<textarea id="code">
+	<textarea id="code" onkeyup=saisir();>
 		Exemple : <h1>Titre</h1>
 	</textarea>
 </div>
