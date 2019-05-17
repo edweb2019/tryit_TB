@@ -46,6 +46,10 @@
 		background-color:black;
 		z-index : 10;
 	}
+
+	#imgLoad {
+		display: none;
+	}
 	</style>
 </head>
 
@@ -56,37 +60,29 @@
 	// TODO : lors du clic sur bouton,
 	// Actualiser l'affichage 
 
-
-	version = 2; 
-	// TODO : détecter les modifications du code 
-	// événement change ?
-	// 	=> déclenché que sur perte du focus dans le champ 
-	// événements liés aux interaction clavier 
-	// => onkeydown : touche enfoncée, pas encore relachée, 
-	// 		le caractère saisi n'est pas encore dans le champ 
-	// => onkeyup : touche relachée , le caractère est dans le champ
-	// 		Bon moment pour actualiser 
-	// => onkeypress : appui prolongé sur une touche  
-
-	version = 3; 
-	// Affichage d'infobulles lors du survol des éléments de la bannière
-
 	var refCode; 
 	var refVisuel; 
 	var refCbAuto;
-	var refInfoBulle;  
+	var refInfoBulle; 
+	var refImgLoad; 
 
 	function init() {
 		refCode = document.getElementById("code");
 		refVisuel = document.getElementById("cadreVisuel");
 		refCbAuto = document.getElementById("cbAuto");
 		refInfoBulle = document.getElementById("infobulle");
+		refImgLoad = document.getElementById("imgLoad");
 
 		document.getElementById("version").innerHTML += " " + version;
 	}
 
 	var observateur; 
 	function saisir (){
+
+		// Si on est dans une version différente de 3
+		// on quitte 
+		if (version != 3) return;
+
 		// il vient d'y avoir une modification dans code 
 		// faut-il actualiser ? 
 
@@ -118,17 +114,27 @@
 	}
 
 
+version = 2; 
+// TODO : détecter les modifications du code 
+// événement change ?
+// 	=> déclenché que sur perte du focus dans le champ 
+// événements liés aux interaction clavier 
+// => onkeydown : touche enfoncée, pas encore relachée, 
+// 		le caractère saisi n'est pas encore dans le champ 
+// => onkeyup : touche relachée , le caractère est dans le champ
+// 		Bon moment pour actualiser 
+// => onkeypress : appui prolongé sur une touche  
+
+
 function traiterAppui(contexte) {
 	// Contexte est un objet 
 	console.log("Touche : "+ contexte.key +" : "  + contexte.keyCode); 
 	//console.log(contexte); 
 
 	// Quelle touche a été appuyée ? 
-	//code
-	//key
-	//keyCode
-	//which 
-	// Laquelle est la plus 'standard' ? => cf. site caniuse.com
+	// code, key, keyCode, which ...
+	// Laquelle est la plus 'standard' ?
+	// => cf. site caniuse.com
 
 	if (contexte.keyCode == 27) { // appui sur 27 
 		// Décocher la case à cocher 
@@ -136,6 +142,9 @@ function traiterAppui(contexte) {
 	}
 
 }
+
+version = 3; 
+// Affichage d'infobulles lors du survol des éléments de la bannière
 
 function mousein (contexte) {
 	// Qu'est-ce qui est survolé ? 
@@ -152,8 +161,6 @@ function mousein (contexte) {
 	// => On regarde leur id 
 
 	switch (contexte.target.id) {
-		case 'banniere' : msg = false;
-		break;
 		case 'version' : msg = "Numéro de la question en cours";
 		break;
 		case 'cbAuto' : msg = "Cocher pour actualiser automatiquement";
@@ -162,6 +169,8 @@ function mousein (contexte) {
 		break;
 		case 'labelAuto' : msg = "Cliquer pour cocher";
 		break;
+	
+		default: msg = false;
 	}
 	// Préparer l'infobulle
 	// => initialiser une référence dans la fonction init 
@@ -208,14 +217,71 @@ function mousein (contexte) {
 	// Largeur de l'écran : window.innerWidth
 
 	// => à terminer en guise de TEA
-
-
 }
+
 function mouseout () {
 	// Cacher l'infobulle
 	console.log("mouseout");
 	refInfoBulle.style.display = "none";
 }
+
+version = 4; 
+// Actualisation périodique avec window.setInterval
+// Une image de chargement s'affiche et disparaîtra une seconde plus tard 
+
+var intervalID = false; 
+
+// Fonction appelée lors du clic sur case à cocher : actuAuto()
+function actuAuto(){
+	console.log("actuAuto"); 
+
+	// SI (case est cochée)
+	if (refCbAuto.checked) {
+		// 	déclencher une actualisation périodique toutes les 5s
+		intervalID = window.setInterval(actualisationPeriodique,5000);
+
+	// actualisationPeriodique est une fonction callback
+	// SURTOUT PAS actualisationPeriodique() !!!!!
+
+	} else {
+		// arrêter les actualisations périodiques
+		if (intervalID != false)
+			clearInterval(intervalID); 
+	}
+}
+
+
+function actualisationPeriodique() {
+	console.log("actualisationPeriodique"); 
+	// Une actualisation périodique, c'est : 
+	// afficher l'image de chargement 
+	imgLoad.style.display = "inline-block";
+	// actualiser 
+	actualiser();
+	// cacher l'image de chargement dans 1 seconde
+	window.setTimeout(function(){
+		// Utilisation d'une déclaration de fonction anonyme
+		imgLoad.style.display = "none";
+	},1000); 
+}
+
+/*
+
+fonction dans les méthode suivantes est le NOM d'une fonction 
+Ce n'est pas un APPEL de la fonction 
+Ce genre de paramètre est appelé "fonction de rappel" aka "callback"
+
+intervalID = window.setInterval(fonction,delai[,param1,param2, ...]);
+intervalID = window.setInterval(code,delai);
+window.clearInterval(intervalID)
+
+
+https://developer.mozilla.org/fr/docs/Web/API/WindowOrWorkerGlobalScope/setTimeout
+var identifiant = scope.setTimeout(fonction[, delai, param1,param2, ...]);
+var identifiant = scope.setTimeout(fonction[, delai]);
+var identifiant = scope.setTimeout(code[, delai]);
+*/
+
 
 </script>
 
@@ -224,9 +290,7 @@ function mouseout () {
 "event propagation" 
 "event bubbling"
 
-event passé en paramètre d'un gestionnaire d'événement représente le contexte de cet événement au moment où il survient
-
--->
+event passé en paramètre d'un gestionnaire d'événement représente le contexte de cet événement au moment où il survient -->
 
 <body onload="init();" onkeydown="traiterAppui(event);">
 
@@ -239,8 +303,9 @@ event passé en paramètre d'un gestionnaire d'événement représente le contex
 			onmouseout="mouseout();" >
 	<span id="version">Version</span>
 	<input id="btnActu" type="button" onclick="actualiser();" value="Actualiser" />
-	<input type="checkbox" id="cbAuto" onclick="actualiser();" />
+	<input type="checkbox" id="cbAuto" onclick="actuAuto();" />
 	<label id="labelAuto" for="cbAuto">automatiquement</label>
+	<img id="imgLoad" src="ajaxLoader.gif" />
 </div>
 
 <div class="cadre" id="cadreSaisie">
