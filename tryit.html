@@ -137,8 +137,45 @@ function traiterAppui(contexte) {
 	// => cf. site caniuse.com
 
 	if (contexte.keyCode == 27) { // appui sur 27 
+
 		// Décocher la case à cocher 
-		refCbAuto.checked = false;
+		if (version != 4)
+			refCbAuto.checked = false;
+
+/*
+		// Dans la version 4: désactiver les appels périodiques
+		// S'il y en a un en cours... 
+		if (version == 4) 
+		if (intervalID != false) {
+			actualiser(); // UX
+			clearInterval(intervalID);
+			intervalID = false;
+		}
+*/
+
+	/* 	ALTERNATIVE : 
+		Le code de désactivation du traitement périodique
+		est dupliqué entre la fonction qui détecte l'appui sur ESC
+		et la fonction qui détecte le click/change sur la cb 
+		On aimerait n'écrire ce code qu'une fois ! 
+		
+		Il est possible de déclencher 
+		des événements utilisateur par du code !!
+	*/
+
+		if (version == 4 ) {
+			refCbAuto.click(); 
+		}
+
+/*		// Ou appeler directement la fonction censée réagir 
+
+		if (version == 4 ) {
+			refCbAuto.checked = false;
+			actuAuto();
+		}
+*/	
+
+	
 	}
 
 }
@@ -245,8 +282,11 @@ function actuAuto(){
 
 	} else {
 		// arrêter les actualisations périodiques
-		if (intervalID != false)
+		if (intervalID != false) {
+			actualiser(); // UX
 			clearInterval(intervalID); 
+			intervalID = false;
+		}
 	}
 }
 
