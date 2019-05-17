@@ -98,10 +98,37 @@
 		refVisuel.innerHTML = contenu; 
 	}
 
-	// TODO 2: utiliser une variable globale "version" pour définir la version affichée dans la bannière 
+
+function traiterAppui(contexte) {
+	// Contexte est un objet 
+	console.log("Touche : "+ contexte.key +" : "  + contexte.keyCode); 
+	//console.log(contexte); 
+
+	// Quelle touche a été appuyée ? 
+	//code
+	//key
+	//keyCode
+	//which 
+	// Laquelle est la plus 'standard' ? => cf. site caniuse.com
+
+	if (contexte.keyCode == 27) { // appui sur 27 
+		// Décocher la case à cocher 
+		refCbAuto.checked = false;
+	}
+
+}
 </script>
 
-<body onload="init();">
+<!-- Les événements déclenchés dans une balise du DOM se propagent en remontant jusqu'à la racine 
+
+"event propagation" 
+"event bubbling"
+
+event passé en paramètre d'un gestionnaire d'événement représente le contexte de cet événement au moment où il survient
+
+-->
+
+<body onload="init();" onkeydown="traiterAppui(event);">
 
 <!-- 1) Structure --> 
 
