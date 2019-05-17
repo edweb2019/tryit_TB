@@ -33,6 +33,19 @@
 			border:0;
 			height:100%;width:100%;	
 		}
+
+	#infobulle {
+		display:none;	
+		position:absolute; 
+		/* quitte le flux, 
+		ne contraint plus les éléments de la page 
+		prend ses coordonnées dans son conteneur, 
+		ie ici la fenêtre du navigateur */
+		padding:5px; 
+		color:white;
+		background-color:black;
+		z-index : 10;
+	}
 	</style>
 </head>
 
@@ -55,14 +68,20 @@
 	// 		Bon moment pour actualiser 
 	// => onkeypress : appui prolongé sur une touche  
 
+	version = 3; 
+	// Affichage d'infobulles lors du survol des éléments de la bannière
+
 	var refCode; 
 	var refVisuel; 
-	var refCbAuto; 
+	var refCbAuto;
+	var refInfoBulle;  
 
 	function init() {
 		refCode = document.getElementById("code");
 		refVisuel = document.getElementById("cadreVisuel");
 		refCbAuto = document.getElementById("cbAuto");
+		refInfoBulle = document.getElementById("infobulle");
+
 		document.getElementById("version").innerHTML += " " + version;
 	}
 
@@ -117,6 +136,65 @@ function traiterAppui(contexte) {
 	}
 
 }
+
+function mousein (contexte) {
+	// Qu'est-ce qui est survolé ? 
+	// Sur quel élément a été initialisé cet événement survol		
+	// que l'on vient d'attraper au niveau de la banniere ?
+	// => On regarde les propriétés de l'objet contexte 
+
+	console.log("survol de " + contexte.target.id);
+	// => propriété target
+	// => https://developer.mozilla.org/fr/docs/Web/API/Event/target
+
+	// contexte.target est une référence vers l'élément survolé 
+	// Comment distinguer les éléments susceptibles d'être survolés ? 
+	// => On regarde leur id 
+
+	switch (contexte.target.id) {
+		case 'banniere' : msg = false;
+		break;
+		case 'version' : msg = "Numéro de la question en cours";
+		break;
+		case 'cbAuto' : msg = "Cocher pour actualiser automatiquement";
+		break;
+		case 'btnActu' : msg = "Cliquer pour actualiser";
+		break;
+		case 'labelAuto' : msg = "Cliquer pour cocher";
+		break;
+	}
+	// Préparer l'infobulle
+	// => initialiser une référence dans la fonction init 
+	// => cacher l'infobulle au départ 
+
+	if (msg != false) {
+		refInfoBulle.innerHTML = msg; 
+		refInfoBulle.style.display = "block";
+	}
+	
+	// Afficher l'infobulle à proximité de la position de la souris
+	// Comment obtenir la position de la souris lors du survol ? 
+	// => cf. objet contexte
+	// console.log(contexte);
+	// => Nombreuses propriétés dispo pour les coordonnées de la souris
+	// clientX, clientY : coordonnées de la souris dans la FENETRE
+	
+	refInfoBulle.style.left = contexte.clientX + 5;  
+	refInfoBulle.style.top = contexte.clientY + 20; 
+
+	// NB : penser à placer l'infobulle du BON COTE 
+	// pour garantir d'avoir assez de place pour l'afficher 	
+	// à droite de la souris si la souris est du cote gauche de l'écran
+	// à gauche sinon 
+	// Largeur de l'écran : window.innerWidth
+
+
+}
+function mouseout () {
+	// Cacher l'infobulle
+	refInfoBulle.style.display = "none";
+}
+
 </script>
 
 <!-- Les événements déclenchés dans une balise du DOM se propagent en remontant jusqu'à la racine 
@@ -130,13 +208,17 @@ event passé en paramètre d'un gestionnaire d'événement représente le contex
 
 <body onload="init();" onkeydown="traiterAppui(event);">
 
+<div id="infobulle">Message</div>
+
 <!-- 1) Structure --> 
 
-<div id="banniere">
+<div 		id="banniere" 
+			onmouseover="mousein(event);" 
+			onmouseout="mouseout();" >
 	<span id="version">Version</span>
-	<input type="button" onclick="actualiser();" value="Actualiser" />
+	<input id="btnActu" type="button" onclick="actualiser();" value="Actualiser" />
 	<input type="checkbox" id="cbAuto" onclick="actualiser();" />
-	<label for="cbAuto">automatiquement</label>
+	<label id="labelAuto" for="cbAuto">automatiquement</label>
 </div>
 
 <div class="cadre" id="cadreSaisie">
