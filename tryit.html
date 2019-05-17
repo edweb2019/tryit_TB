@@ -179,8 +179,27 @@ function mousein (contexte) {
 	// => Nombreuses propriétés dispo pour les coordonnées de la souris
 	// clientX, clientY : coordonnées de la souris dans la FENETRE
 	
-	refInfoBulle.style.left = contexte.clientX + 5;  
-	refInfoBulle.style.top = contexte.clientY + 20; 
+	refInfoBulle.style.left = 
+		(parseInt(contexte.clientX) + 5) + "px"; 
+
+	refInfoBulle.style.top = 
+		(parseInt(contexte.clientY) + 20) + "px"; 
+
+	// NB : pour certains navigateurs, il est nécessaire d'ajouter l'unité 
+	// "px" à la valeur affectée à style.left & style.top 
+	// => contexte.clientX + 5 + "px"; 
+
+	// ATTENTION : 
+	// 1+1 vaut 2		le "+" est l'opérateur de somme 
+	// 1+"1" vaut 2		le "+" est l'opérateur de somme 
+	// "1"+1 vaut "11"	le "+" est l'opérateur de concaténation 
+	
+	// Penser à tester ces expressions depuis la console 
+
+	// transformer une chaine en entier : 
+	// parseInt(chaine,[base])
+	// parseInt(011) vaut 9
+
 
 	// NB : penser à placer l'infobulle du BON COTE 
 	// pour garantir d'avoir assez de place pour l'afficher 	
@@ -188,10 +207,13 @@ function mousein (contexte) {
 	// à gauche sinon 
 	// Largeur de l'écran : window.innerWidth
 
+	// => à terminer en guise de TEA
+
 
 }
 function mouseout () {
 	// Cacher l'infobulle
+	console.log("mouseout");
 	refInfoBulle.style.display = "none";
 }
 
